@@ -11,6 +11,10 @@ class Cliente(models.Model):
 
 @receiver(post_save, sender=User)
 def update_user_Cliente(sender, instance, created, **kwargs):
-    if created:
-        Cliente.objects.create(user=instance)
-    instance.cliente.save()
+    try:
+        if created:
+            Cliente.objects.create(user=instance)
+        instance.cliente.save()
+    except Exception as uid:
+        print(uid)
+        print('si tenes un super user lo tenes que crear de nuevo')
