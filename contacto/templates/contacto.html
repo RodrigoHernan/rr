@@ -1,0 +1,117 @@
+{% extends 'templatesComunes/base.html' %}
+{% load staticfiles %}
+{% block contenido %}
+<!-- <img style="width: 100%;" src="{% static '/imagenes/mapa_contacto2.jpg' %}" > -->
+<!-- <div class="contacto"> -->
+
+
+<iframe  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13141.109752025724!2d-59.1601431!3d-34.5718459!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xf2bc370057626d9f!2sAbad%C3%ADa+de+San+Benito+de+Luj%C3%A1n!5e0!3m2!1ses-419!2sar!4v1525292500637" 
+     frameborder="0" style="border:0; width:calc(100vw - 20px); margin:auto; height: 60vh; " allowfullscreen></iframe>
+
+<form id="test" class="autoridades-form" enctype="multipart/form-data" method="post">
+    <div class="row form-contacto" >
+        <div class="col s12 form-contacto-card" style="margin:auto">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">Contacto</span> {% csrf_token %}
+                    <div class="row row-contacto">
+                         <div class="col s12 m5 contacto-info">
+
+                            <div class="contacto-info-item">
+                                <div class="icono">
+                                    <i class="material-icons">location_on</i>
+                                </div>
+                                <div class="contacto-info-item-info">
+                                    <h1>Dirección</h1>
+                                    <p class="dir">Ana Guerrieri 1722 [1684] <br> El Palomar Pcia de Buenos Aires, Argentina</p>
+                                </div>
+                            </div>
+                            <div class="contacto-info-item">
+                                <div class="icono">
+                                    <i class="material-icons">call</i>
+                                </div>
+                                <div class="contacto-info-item-info">
+                                    <h1>Telefono</h1>
+                                    <p>(011)4650-2918</p>
+                                </div>
+                            </div>
+                            <div class="contacto-info-item">
+                                <div class="icono">
+                                    <i class="material-icons">email</i>
+                                </div>
+                                <div class="contacto-info-item-info">
+                                    <h1>Mail</h1>
+                                    <p>ventas@alvisansrl.com.ar</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m7">
+
+
+                        {% for field in form %}
+                        <div class="input-field col s12 {{ field.field.css }}">
+                            {{ field }} {% if field.help_text %}
+                                <label for="id_{{ field.name }}_helptext" class="help-text">{{ field.help_text }}</label>                                                    {%endif %}
+                                <label for="middle-label-hola id_{{ field.name }}" class="text-right middle">
+                            {% if field.field.required %}
+                                <span class="required">{{ field.label }} </span>
+                            {% else %}  {{ field.label }}
+                            {% endif %}
+                            </label>
+                        </div>
+                        {% endfor %}
+
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="card-action">
+                    <!-- <a id="btnVerMas" href="#" onclick="verMasToggle();">ver mas</a> -->
+                    <a id="btnVerMas" href="#" onclick="enviar();">enviar <i class="material-icons">send</i></a>
+
+                    <!-- <button type="submit">Submit</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</form>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+     $(document).ready(function () {
+        console.log("cargo");
+     });
+    function seEnvio() {
+        Materialize.toast('Mensaje Enviado!', 3000, '', function () { window.location.href = "/"; });
+    }
+    function enviar() { 
+        // var nform = $test
+        console.log($('#test'))
+        var $form = $('#test'),
+            Nombre = $form.find("input[name='nombre']").val(),
+            email = $form.find("input[name='email']").val(),
+            contenido = $form.find("input[name='comentarios']").val(),
+            url = $form.attr("action");
+        console.log('valor nombre-' + email + '-asd' + contenido );
+        if (Nombre == '' || email == '' || contenido == '' ) {
+            Materialize.toast('Verifique los datos ingresados', 4000);
+        }else {
+        Materialize.toast('enviando mensaje...', 100000);
+        $.ajax({
+            type: "POST",
+            url: "",
+            data:{'json': JSON.stringify({ nombre: Nombre, email: email, comentarios: contenido, csrfmiddlewaretoken: '{{ csrf_token }}' })},
+            success: function () { seEnvio(); }
+        });
+        }
+    }
+
+</script>
+{% endblock %}
